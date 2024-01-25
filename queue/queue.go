@@ -1,6 +1,6 @@
 package queue
 
-// Queue is a FIFO ordered collection of items
+// Queue is a FIFO ordered collection of items.
 type Queue[T any] interface {
 	Enqueue(item T)
 	Dequeue() (T, bool)
@@ -12,7 +12,7 @@ type queue[T any] struct {
 	items []T
 }
 
-// NewQueue creates a new queue
+// NewQueue creates a new queue.
 func NewQueue[T any](items ...T) Queue[T] {
 	queueItems := make([]T, 0)
 	queueItems = append(queueItems, items...)
@@ -22,12 +22,12 @@ func NewQueue[T any](items ...T) Queue[T] {
 	}
 }
 
-// Enqueue adds an item to the end of the queue
+// Enqueue adds an item to the end of the queue.
 func (q *queue[T]) Enqueue(item T) {
 	q.items = append(q.items, item)
 }
 
-// Dequeue takes an item from the front of the queue
+// Dequeue takes an item from the front of the queue.
 func (q *queue[T]) Dequeue() (T, bool) {
 	if len(q.items) == 0 {
 		var zero T
@@ -41,12 +41,12 @@ func (q *queue[T]) Dequeue() (T, bool) {
 	return item, true
 }
 
-// Length returns the number of items in the queue
+// Length returns the number of items in the queue.
 func (q *queue[T]) Length() int {
 	return len(q.items)
 }
 
-// IsEmpty returns true if there are no items in the queue
+// IsEmpty returns true if there are no items in the queue.
 func (q *queue[T]) IsEmpty() bool {
 	return len(q.items) == 0
 }

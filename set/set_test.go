@@ -55,6 +55,40 @@ func TestSet_Cardinality(t *testing.T) {
 	}
 }
 
+func TestSet_IsEqualTo(t *testing.T) {
+	testCases := []struct {
+		first         Set[int]
+		second        Set[int]
+		expectedEqual bool
+	}{
+		{NewSet[int](), NewSet[int](), true},
+		{NewSet(3), NewSet(3), true},
+		{NewSet(5, 7, 2), NewSet(2, 7, 5, 5, 2), true},
+		{NewSet[int](), NewSet(5, 6, 2), false},
+		{NewSet(5, 6, 2), NewSet[int](), false},
+		{NewSet(6, 3, 1, 4), NewSet(6, 3, 1, 1, 8, 4), false},
+	}
+
+	for _, testCase := range testCases {
+		if equal := testCase.first.IsEqualTo(testCase.second); equal != testCase.expectedEqual {
+			t.Errorf("expected %v and %v equality to be %v, but got %v", testCase.first, testCase.second, testCase.expectedEqual, equal)
+		}
+	}
+}
+
+func TestSet_IsEmpty(t *testing.T) {
+	emptySet := NewSet[int]()
+	nonEmptySet := NewSet(1, 5, 9)
+
+	if !emptySet.IsEmpty() {
+		t.Error("expected IsEmpty to return true for empty set, but got false")
+	}
+
+	if nonEmptySet.IsEmpty() {
+		t.Error("expected IsEmpty to return false for non-empty set, but got true")
+	}
+}
+
 func TestSet_Add(t *testing.T) {
 	testSet := NewSet[int]()
 
@@ -165,30 +199,70 @@ func TestSet_SymmetricDifference(t *testing.T) {
 }
 
 func TestUnion(t *testing.T) {
-	if elements := Union[int]().Elements(); !areSetEqual(elements, []int{}) {
-		t.Errorf("expected the union of no sets to be the empty set, but got %v", elements)
+	testCases := []struct {
+		sets          []Set[int]
+		expectedUnion Set[int]
+	}{
+		{[]Set[int]{}, NewSet[int]()},
+		{[]Set[int]{NewSet(2, 4, 6, 8)}, NewSet(2, 4, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5)}, NewSet(1, 2, 3, 4, 5, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5), NewSet(2, 9, 10)}, NewSet(1, 2, 3, 4, 5, 6, 8, 9, 10)},
 	}
-	if elements := Union(NewSet(1, 2, 3, 4)).Elements(); !areSetEqual(elements, []int{1, 2, 3, 4}) {
-		t.Errorf("expected the union of a single set {1, 2, 3, 4} to be itself, but got %v", elements)
+	for _, testCase := range testCases {
+		if union := Union(testCase.sets...); !union.IsEqualTo(testCase.expectedUnion) {
+			t.Errorf("expected the union of %v to be %v, but got %v", testCase.sets, testCase.expectedUnion, union)
+		}
 	}
+}
 
-	a := NewSet(2, 4, 6, 8)
-	b := NewSet(1, 2, 3, 4, 5)
-	c := NewSet(9, 10)
+func TestIntersection(t *testing.T) {
+	testCases := []struct {
+		sets                 []Set[int]
+		expectedIntersection Set[int]
+	}{
+		{[]Set[int]{}, NewSet[int]()},
+		{[]Set[int]{NewSet(2, 4, 6, 8)}, NewSet(2, 4, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5)}, NewSet(2, 4)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5), NewSet(2, 9, 10)}, NewSet(2)},
+	}
+	for _, testCase := range testCases {
+		if intersection := Intersection(testCase.sets...); !intersection.IsEqualTo(testCase.expectedIntersection) {
+			t.Errorf("expected the intersection of %v to be %v, but got %v", testCase.sets, testCase.expectedIntersection, intersection)
+		}
+	}
+}
 
-	unionOfAAndB := Union(a, b)
-	if elements := unionOfAAndB.Elements(); !areSetEqual(elements, []int{1, 2, 3, 4, 5, 6, 8}) {
-		t.Errorf("expected the union of {2, 4, 6, 8} and {1, 2, 3, 4, 5} to be {1, 2, 3, 4, 5, 6, 8}, but got %v", elements)
+func TestDifference(t *testing.T) {
+	testCases := []struct {
+		sets               []Set[int]
+		expectedDifference Set[int]
+	}{
+		{[]Set[int]{}, NewSet[int]()},
+		{[]Set[int]{NewSet(2, 4, 6, 8)}, NewSet(2, 4, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5)}, NewSet(6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5), NewSet(2, 6, 10)}, NewSet(8)},
 	}
-	if elements := a.Elements(); !areSetEqual(elements, []int{2, 4, 6, 8}) {
-		t.Errorf("expected a to be unmodified, but got %v", elements)
+	for _, testCase := range testCases {
+		if difference := Difference(testCase.sets...); !difference.IsEqualTo(testCase.expectedDifference) {
+			t.Errorf("expected the difference of %v to be %v, but got %v", testCase.sets, testCase.expectedDifference, difference)
+		}
 	}
-	if elements := b.Elements(); !areSetEqual(elements, []int{1, 2, 3, 4, 5}) {
-		t.Errorf("expected b to be unmodified, but got %v", elements)
-	}
+}
 
-	if elements := Union(a, b, c).Elements(); !areSetEqual(elements, []int{1, 2, 3, 4, 5, 6, 8, 9, 10}) {
-		t.Errorf("expected the union of {2, 4, 6, 8}, {1, 2, 3, 4, 5}, and {9, 10} to be {1, 2, 3, 4, 5, 6, 8, 9, 10}, but got %v", elements)
+func TestSymmetricDifference(t *testing.T) {
+	testCases := []struct {
+		sets               []Set[int]
+		expectedDifference Set[int]
+	}{
+		{[]Set[int]{}, NewSet[int]()},
+		{[]Set[int]{NewSet(2, 4, 6, 8)}, NewSet(2, 4, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5)}, NewSet(1, 3, 5, 6, 8)},
+		{[]Set[int]{NewSet(2, 4, 6, 8), NewSet(1, 2, 3, 4, 5), NewSet(3, 6, 10)}, NewSet(1, 5, 8, 10)},
+	}
+	for _, testCase := range testCases {
+		if symmetricDifference := SymmetricDifference(testCase.sets...); !symmetricDifference.IsEqualTo(testCase.expectedDifference) {
+			t.Errorf("expected the symmetric difference of %v to be %v, but got %v", testCase.sets, testCase.expectedDifference, symmetricDifference)
+		}
 	}
 }
 
