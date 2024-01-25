@@ -19,8 +19,8 @@ type set[T comparable] struct {
 	elements map[T]empty
 }
 
-// New creates a new set with the provided elements
-func New[T comparable](elements ...T) Set[T] {
+// NewSet creates a new set with the provided elements
+func NewSet[T comparable](elements ...T) Set[T] {
 	setElements := make(map[T]empty)
 	for _, element := range elements {
 		setElements[element] = empty{}
@@ -99,9 +99,9 @@ func (s *set[T]) SymmetricDifference(other Set[T]) {
 // Union computes the union of zero or more sets
 func Union[T comparable](sets ...Set[T]) Set[T] {
 	if len(sets) == 0 {
-		return New[T]()
+		return NewSet[T]()
 	}
-	set := New(sets[0].Elements()...)
+	set := NewSet(sets[0].Elements()...)
 
 	for _, other := range sets[1:] {
 		set.Union(other)

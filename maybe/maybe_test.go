@@ -68,27 +68,26 @@ func TestSome_Unwrap(t *testing.T) {
 	_, noStringOk := noString.Unwrap()
 
 	if someIntValue != 6 {
-		t.Errorf("Unwrapping Some(6) returned %d", someIntValue)
+		t.Errorf("unwrapping Some(6) returned %d", someIntValue)
 	}
 
 	if !someIntOk {
-		t.Error("Unwrapping Some(6) was not ok")
+		t.Error("unwrapping Some(6) was not ok")
 	}
 
 	if someStringValue != "test" {
-		t.Errorf("Unwrapping Some(\"test\") returned \"%s\"", someStringValue)
+		t.Errorf("unwrapping Some(\"test\") returned \"%s\"", someStringValue)
 	}
 
 	if !someStringOk {
-		t.Error("Unwrapping Some(\"test\") was not ok")
+		t.Error("unwrapping Some(\"test\") was not ok")
 	}
 
 	if noIntOk {
-		t.Error("Unwrapping None[int]() was ok")
+		t.Error("unwrapping None[int]() was ok")
 	}
 
 	if noStringOk {
-		t.Error("Unwrapping None[string]() was ok")
+		t.Error("unwrapping None[string]() was ok")
 	}
 }
-
