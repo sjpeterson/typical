@@ -1,7 +1,6 @@
 package set
 
 import (
-	"cmp"
 	"sort"
 	"testing"
 )
@@ -121,11 +120,11 @@ func TestSet_Add(t *testing.T) {
 }
 
 func TestSet_Elements(t *testing.T) {
-	emptySet := NewSet[string]()
+	emptySet := NewSet[int]()
 	singletonSet := NewSet(5)
 	primesBelowFifteen := NewSet(2, 3, 5, 7, 11, 13)
 
-	if elements := emptySet.Elements(); !areSetEqual(elements, []string{}) {
+	if elements := emptySet.Elements(); !areSetEqual(elements, []int{}) {
 		t.Errorf("expected elements of the empty set of strings to be an empty slice, but got %v", elements)
 	}
 
@@ -266,7 +265,7 @@ func TestSymmetricDifference(t *testing.T) {
 	}
 }
 
-func areSetEqual[T cmp.Ordered](xs, ys []T) bool {
+func areSetEqual(xs, ys []int) bool {
 	if len(xs) != len(ys) {
 		return false
 	}
