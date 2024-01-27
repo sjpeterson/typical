@@ -119,6 +119,20 @@ func TestSet_Add(t *testing.T) {
 	}
 }
 
+func TestSet_Clone(t *testing.T) {
+	testSet := NewSet(6, 8, 3, 5, 2)
+	clonedSet := testSet.Clone()
+
+	if !clonedSet.IsEqualTo(testSet) {
+		t.Errorf("expected cloned set to be equal to the original")
+	}
+
+	clonedSet.Add(1)
+	if clonedSet.IsEqualTo(testSet) {
+		t.Errorf("cloned set still equal to original after adding an element")
+	}
+}
+
 func TestSet_Elements(t *testing.T) {
 	emptySet := NewSet[int]()
 	singletonSet := NewSet(5)

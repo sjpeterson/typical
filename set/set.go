@@ -5,6 +5,7 @@ type empty struct{}
 // Set is a unordered collection of unique elements.
 type Set[T comparable] interface {
 	Add(element T)
+	Clone() Set[T]
 	Cardinality() int
 	Contains(element T) bool
 	DoesNotContain(element T) bool
@@ -29,6 +30,16 @@ func NewSet[T comparable](elements ...T) Set[T] {
 	}
 
 	return &set[T]{elements: setElements}
+}
+
+// Clone creates a clone of the set
+func (s *set[T]) Clone() Set[T] {
+	set := NewSet[T]()
+	for element := range s.elements {
+		set.Add(element)
+	}
+	
+	return set
 }
 
 // Add adds an element to the set.

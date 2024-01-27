@@ -80,13 +80,21 @@ With typical's `set.Set`, the above actions are
 ## Stack and Queue
 
 In Go, stacks and queues are just slices that you append to and take values
-from according to some rules. It's straightforward enough, easy to read, and
-not terribly prone to make mistakes, but 
+from according to specific rules. It's straightforward enough, but rather
+wordy. And although it's easy to understand, readability isn't great. Compared
+to
 
-    for len(myStack) > 0 {
-        value := myStack[n-1]
-        myStack = myStack[:n-1]
+    n := len(myStack) - 1
+    if n >= 0 {
+        item := myStack[n]
+        myStack = myStack[:n]
+        doSomethingWith(item)
     }
 
-when all you want to do is
+I would rather
 
+    if item, ok := myStack.Pop(); ok {
+        doSomethingWith(item)
+    }
+
+any day of the week.
