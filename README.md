@@ -27,7 +27,7 @@ fallible built-ins:
         fmt.Printf("The value of %v is %v", key val)
     }
 
-Maybe co-locates the two variables, and hides them to protects against
+Maybe co-locates the two variables and hides them in order to protect against
 accidental misuse. It also helps with readability. Developers are often tempted
 to take the shortcut and use the zero value as a stand-in for no value. This is
 fine in some cases where the zero value has no meaning, but obviously not fine
