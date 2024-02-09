@@ -56,7 +56,7 @@ sets into a new set:
 
     intersection := make(map[string]struct{})
     for element := range setA {
-        if _, isAMember := setB[element] {
+        if _, isAMember := setB[element]; isAMember {
             intersection[element] = struct{}{}
         }
     }
