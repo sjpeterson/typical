@@ -1,4 +1,4 @@
-package types
+package either
 
 type Either[A, B any] interface {
 	IsLeft() bool
