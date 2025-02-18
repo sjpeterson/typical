@@ -35,6 +35,10 @@ in cases where it does. It is especially dangerous in situations where it has
 a meaning but is not expected to happen, as more often than not, developers
 will forget to check for it.
 
+## Either
+
+Either is a value with two possible types.
+
 ## Set
 
 The idiomatic way to implement a set of strings in Go is `map[string]struct{}`.
