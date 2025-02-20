@@ -38,7 +38,7 @@ func (s *set[T]) Clone() Set[T] {
 	for element := range s.elements {
 		set.Add(element)
 	}
-	
+
 	return set
 }
 
