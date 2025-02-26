@@ -5,6 +5,7 @@ type empty struct{}
 // Set is a unordered collection of unique elements.
 type Set[T comparable] interface {
 	Add(element T)
+	Discard(element T)
 	Clone() Set[T]
 	Cardinality() int
 	Contains(element T) bool
@@ -46,6 +47,12 @@ func (s *set[T]) Clone() Set[T] {
 func (s *set[T]) Add(element T) {
 	s.elements[element] = empty{}
 }
+
+// Discard removes an element from the set if it is a member. If it is not a member, do nothing.
+func (s *set[T]) Discard(element T) {
+	delete(s.elements, element)
+}
+
 
 // Cardinality is the number of elements in the set.
 func (s *set[T]) Cardinality() int {

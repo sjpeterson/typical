@@ -211,6 +211,16 @@ func TestSet_SymmetricDifference(t *testing.T) {
 	}
 }
 
+func TestSet_Discard(t *testing.T) {
+	a := NewSet(2, 4, 7, 8)
+
+	a.Discard(7)
+
+	if elements := a.Elements(); !areSetEqual(elements, []int{2, 4, 8}) {
+		t.Errorf("expected a to be {2, 4, 8}, but got %v", elements)
+	}
+}
+
 func TestUnion(t *testing.T) {
 	testCases := []struct {
 		sets          []Set[int]
