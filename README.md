@@ -13,15 +13,20 @@ The package provides the following types, each in their own subpackage:
 - Queue
 
 A common design pattern for all of them is that the internals are kept private
-by exposing an interface and 
+by exposing an interface implemented by a pointer to a private struct, and one
+or more functions to create such pointers.
+
+In addition, the `tuples` subpackage contains generic types for pairs, triples,
+and quadruples. In most cases, you should go for a custom struct with
+appropriately named fields instead, but there are
 
 ## Maybe
 
 Maybe is a value that may or may not exist. In various languages, it is also
 known as nullable, Option, Optional, etc. In Go, the idiomatic way to express
-them is to use two separate variables - one for the value itself, and a bool
-signifying whether the value is valid or not, e.g. in the returns of (some)
-fallible built-ins:
+them is to abuse the fact that pointers are Nilable, or to use two separate
+variables - one for the value itself, and a bool signifying whether the value
+is valid or not, e.g. in the returns of (some) fallible built-ins:
 
     if val, ok := myMap["key"]; ok {
         fmt.Printf("The value of %v is %v", key val)
@@ -35,9 +40,22 @@ in cases where it does. It is especially dangerous in situations where it has
 a meaning but is not expected to happen, as more often than not, developers
 will forget to check for it.
 
+To create a `Maybe` value:
+
+    var maybeExample maybe.Maybe[string]
+    maybeExample = maybe.Some("this value exists")
+    maybeExample = maybe.None[string]()
+
+To use it:
+
+    if val, ok := maybeExample.Unwrap(); ok {
+        fmt.Print("The value is %v", val)
+    }
+
 ## Either
 
-Either is a value with two possible types.
+Either is a value with two possible types. Haskellers and Rustaceans might be
+tempted to use it for error handling. Don't.
 
 ## Set
 
@@ -79,7 +97,7 @@ With typical's `set.Set`, the above actions are
 
     intersection := set.Intersection(setA, setB)
 
-. Nice, tidy, and readable. As it should be.
+Nice, tidy, and readable. As it should be.
 
 ## Stack and Queue
 
